@@ -139,3 +139,6 @@ LOGOUT_REDIRECT_URL = 'home'
 
 # Crispy form extension bootstrap version
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+# Use django console as email backend for testing
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
