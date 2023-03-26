@@ -12,6 +12,17 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 
+# Monkey patch for the django-types package
+from django.db.models import ForeignKey
+from django.db.models.manager import BaseManager
+from django.db.models.query import QuerySet
+
+# NOTE: there are probably other items you'll need to monkey patch depending on
+# your version.
+for cls in [QuerySet, BaseManager, ForeignKey]:
+    cls.__class_getitem__ = classmethod(lambda cls, *args, **kwargs: cls)  # type: ignore [attr-defined]
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -143,3 +154,4 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 # Use django console as email backend for testing
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+

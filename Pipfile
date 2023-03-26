@@ -5,10 +5,10 @@ name = "pypi"
 
 [packages]
 django = "~=3.1"
-django-stubs = "*"
 django-crispy-forms = "==1.9.2"
 
 [dev-packages]
+django-types = "*"
 
 [requires]
 python_version = "3.9"

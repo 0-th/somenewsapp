@@ -17,5 +17,3 @@ class Article(models.Model):
 
     def get_absolute_url(self):
         return reverse(viewname='article_detail', args=[str(self.id)])
-        # TODO: Install django-types package to setup better type system
-        # specifically for pyrights
