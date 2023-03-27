@@ -9,6 +9,7 @@ django-crispy-forms = "==1.9.2"
 
 [dev-packages]
 django-types = "*"
+django-stubs = "*"
 
 [requires]
 python_version = "3.9"
