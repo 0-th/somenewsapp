@@ -16,4 +16,23 @@ class Article(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse(viewname='article_detail', args=[str(self.id)])
+        return reverse(viewname='article_detail', args=[str(self.pk)])
+
+
+class Comment(models.Model):
+    article = models.ForeignKey(
+        to=Article,
+        on_delete=models.CASCADE,
+        related_name='comments'
+    )
+    comment = models.CharField(max_length=1000)
+    author = models.ForeignKey(
+        to=get_user_model(),
+        on_delete=models.CASCADE
+    )
+
+    def __str__(self):
+        return self.comment
+
+    def get_absolute_url(self):
+        return reverse(viewname='article_detail', args=[str(self.pk)])
