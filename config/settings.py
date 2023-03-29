@@ -37,12 +37,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Get config from .env file in dev and from env variables in prod 
 dev_secrets = {}
 
-with open('../.env', 'r') as env_file:
-    lines = env_file.readlines()
+try:
+    with open('../.env', 'r') as env_file:
+        lines = env_file.readlines()
 
-    for line in lines:
-        key, value = line.strip().split(sep='=')
-        dev_secrets[str(key.strip())] = str(value.strip())
+        for line in lines:
+            key, value = line.strip().split(sep='=')
+            dev_secrets[str(key.strip())] = str(value.strip())
+except FileNotFoundError:
+    pass
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('SECRET_KEY', default=dev_secrets['SECRET_KEY'])
