@@ -17,6 +17,10 @@ from django.db.models import ForeignKey
 from django.db.models.manager import BaseManager
 from django.db.models.query import QuerySet
 
+import os
+
+import dj_database_url
+
 # NOTE: there are probably other items you'll need to monkey patch depending on
 # your version.
 for cls in [QuerySet, BaseManager, ForeignKey]:
@@ -30,13 +34,23 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
+# Get config from .env file in dev and from env variables in prod 
+dev_secrets = {}
+
+with open('../.env', 'r') as env_file:
+    lines = env_file.readlines()
+
+    for line in lines:
+        key, value = line.strip().split(sep='=')
+        dev_secrets[str(key.strip())] = str(value.strip())
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-opsb^c-15ti6$m7abma!f#-k#5e8gfo!oj5(qm23*8zt(yvzov'
+SECRET_KEY = os.environ.get('SECRET_KEY', default=dev_secrets['SECRET_KEY'])
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = dev_secrets['DEBUG'] or False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['.onrender.com', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -94,10 +108,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(os.environ.get('DATABASE_URL', default=dev_secrets['DATABASE_URL']), conn_max_age=600)
 }
 
 
@@ -155,3 +166,13 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 # Use django console as email backend for testing
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
+# This setting tells Django at which URL static files are going to be served to the user.
+# Here, they well be accessible at your-domain.onrender.com/static/...
+STATIC_URL = '/static/'
+# Following settings only make sense on production and may break development environments.
+if not DEBUG:    # Tell Django to copy statics to the `staticfiles` directory
+    # in your application directory on Render.
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+    # Turn on WhiteNoise storage backend that takes care of compressing static files
+    # and creating unique names for each version so they can safely be cached forever.
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
