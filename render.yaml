@@ -7,7 +7,6 @@ services:
   - type: web
     name: somenewsapp
     env: python
-    plan: starter
     buildCommand: "./build.sh"
     startCommand: "gunicorn mysite.wsgi:application"
     envVars:
