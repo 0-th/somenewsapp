@@ -1,14 +1,15 @@
 databases:
-  - name: somenewsapp
-    databaseName: somenewsapp
-    user: somenewsapp
+  - name: somenewsapp-db
+    databaseName: somenewsapp_db
+    user: somenewsapp_db_user
 
 services:
   - type: web
     name: somenewsapp
-    env: python
+    env: python3.9
     buildCommand: "./build.sh"
     startCommand: "gunicorn mysite.wsgi:application"
+    plan: free
     envVars:
       - key: DATABASE_URL
         fromDatabase:
