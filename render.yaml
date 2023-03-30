@@ -6,7 +6,7 @@ databases:
 services:
   - type: web
     name: somenewsapp
-    env: python3
+    env: python
     buildCommand: "./build.sh"
     startCommand: "gunicorn mysite.wsgi:application"
     plan: free
